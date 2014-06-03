@@ -1,7 +1,20 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, current_app, abort
 import ConfigParser
 import stripe
+from functools import wraps
+
+def ssl_required(fn):
+    @wraps(fn)
+    def decorated_view(*args, **kwargs):
+        if request.is_secure:
+                return fn(*args, **kwargs)
+        else:
+                return redirect(request.url.replace("http://", "https://"))
+        
+        abort(500)
+            
+    return decorated_view
 
 
 config = ConfigParser.SafeConfigParser()
@@ -22,10 +35,12 @@ stripe.api_key = stripe_sk
 app = Flask(__name__)
 
 @app.route('/signup')
+@ssl_required
 def index():
     return render_template('signup.html', key=stripe_pk, watermark=watermark)
 
 @app.route('/signup_result', methods=['POST'])
+@ssl_required
 def charge():
 
     if 'plan' not in request.form:
