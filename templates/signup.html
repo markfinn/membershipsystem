@@ -5,7 +5,7 @@
         <span>Join Appleton Makerspace!</span>
       </label>
     </article>
-  <form action="/signup_result" method="post">
+  <form action="{{ url_for('charge') }}" method="post">
 <input type="hidden" name="plan" value="membership_individual">
     <script src="https://checkout.stripe.com/checkout.js"
 	class="stripe-button"
@@ -13,13 +13,13 @@
             data-name="Appleton Makerspace"
             data-description="Membership Signup"
             data-panel-label="Join ($50/Mo)"
-            data-label="Full Member"
+            data-label="Individual Member"
             data-billing-address="true"
 	data-allow-remember-me="false"
             ></script>
   </form>
 
-  <form action="/signup_result" method="post">
+  <form action="{{ url_for('charge') }}" method="post">
 <input type="hidden" name="plan" value="membership_family">
     <script src="https://checkout.stripe.com/checkout.js"
 	class="stripe-button"
@@ -33,7 +33,7 @@
             ></script>
   </form>
 
-  <form action="/signup_result" method="post">
+  <form action="{{ url_for('charge') }}" method="post">
 <input type="hidden" name="plan" value="membership_student">
     <script src="https://checkout.stripe.com/checkout.js"
 	class="stripe-button"
@@ -49,8 +49,7 @@
 <hr>
 In weird cases, you can sign up a member account with out setting up a bill plan
 here:
-  <form action="/signup_result" method="post">
-
+  <form action="{{ url_for('charge') }}" method="post">
     <script src="https://checkout.stripe.com/checkout.js"
 	class="stripe-button"
             data-key="{{ key }}"
