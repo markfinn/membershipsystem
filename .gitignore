@@ -1,0 +1,4 @@
+*~
+*.pyc
+settings.conf
+venv
