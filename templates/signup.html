@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block content %}
+    <article>
+      <label>
+        <span>Join Appleton Makerspace!</span>
+      </label>
+    </article>
+  <form action="/signup_result" method="post">
+<input type="hidden" name="plan" value="membership_individual">
+    <script src="https://checkout.stripe.com/checkout.js"
+	class="stripe-button"
+            data-key="{{ key }}"
+            data-name="Appleton Makerspace"
+            data-description="Membership Signup"
+            data-panel-label="Join ($50/Mo)"
+            data-label="Full Member"
+            data-billing-address="true"
+	data-allow-remember-me="false"
+            ></script>
+  </form>
+
+  <form action="/signup_result" method="post">
+<input type="hidden" name="plan" value="membership_family">
+    <script src="https://checkout.stripe.com/checkout.js"
+	class="stripe-button"
+            data-key="{{ key }}"
+            data-name="Appleton Makerspace"
+            data-description="Membership Signup"
+            data-panel-label="Join ($75/Mo)"
+            data-label="Family Membership"
+            data-billing-address="true"
+	data-allow-remember-me="false"
+            ></script>
+  </form>
+
+  <form action="/signup_result" method="post">
+<input type="hidden" name="plan" value="membership_student">
+    <script src="https://checkout.stripe.com/checkout.js"
+	class="stripe-button"
+            data-key="{{ key }}"
+            data-name="Appleton Makerspace"
+            data-description="Membership Signup"
+            data-panel-label="Join ($25/Mo)"
+            data-label="Student Member"
+            data-billing-address="true"
+	data-allow-remember-me="false"
+            ></script>
+  </form>
+<hr>
+In weird cases, you can sign up a member account with out setting up a bill plan
+here:
+  <form action="/signup_result" method="post">
+
+    <script src="https://checkout.stripe.com/checkout.js"
+	class="stripe-button"
+            data-key="{{ key }}"
+            data-name="Appleton Makerspace"
+            data-description="Membership Signup"
+            data-panel-label="Join special"
+            data-label="Other Membership"
+            data-billing-address="true"
+	data-allow-remember-me="false"
+            ></script>
+  </form>
+
+To change or cancel membership, please Email <a href="mailto:memberships@dhmn.net">memberships@dhmn.net</a>
+{% endblock %}
