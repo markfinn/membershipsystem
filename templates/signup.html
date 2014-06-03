@@ -3,7 +3,8 @@
     <article>
       <label>
         <span>Join Appleton Makerspace!</span>
-      </label>
+      </label><br>
+      Choose a membership plan to authorize monthly payments:
     </article>
   <form action="{{ url_for('charge') }}" method="post">
 <input type="hidden" name="plan" value="membership_individual">
@@ -46,7 +47,7 @@
 	data-allow-remember-me="false"
             ></script>
   </form>
-<hr>
+<br>
 In weird cases, you can sign up a member account with out setting up a bill plan
 here:
   <form action="{{ url_for('charge') }}" method="post">
@@ -61,6 +62,6 @@ here:
 	data-allow-remember-me="false"
             ></script>
   </form>
-
+<hr>
 To change or cancel membership, please Email <a href="mailto:memberships@dhmn.net">memberships@dhmn.net</a>
 {% endblock %}
