@@ -1,0 +1,10 @@
+/var/log/uwsgi.log {
+    rotate 10
+    daily
+    compress
+    missingok
+    create 640 uwsgi adm
+    postrotate
+        initctl restart uwsgi >/dev/null 2>&1
+    endscript
+}
