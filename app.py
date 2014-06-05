@@ -28,20 +28,23 @@ stripe_pk = config.get('stripe_keys', 'publishable')
 
 assert stripe_sk[3:7] == stripe_pk[3:7]
 assert stripe_sk[3:7] == 'test' or  stripe_sk[3:7] == 'live'
-watermark=''
 IS_TEST_MODE = False
 if stripe_sk[3:7] == 'test':
-  watermark='TEST'
   IS_TEST_MODE = True
 
 stripe.api_key = stripe_sk
         
 app = Flask(__name__)
 
+@app.context_processor
+def inject_user():
+    return dict(IS_TEST_MODE=IS_TEST_MODE)
+    
+
 @app.route('/signup')
 @secure_required_in_production
 def index():
-    return render_template('signup.html', key=stripe_pk, watermark=watermark)
+    return render_template('signup.html', key=stripe_pk)
 
 @app.route('/signup_result', methods=['POST'])
 @secure_required_in_production
@@ -55,7 +58,7 @@ def charge():
         plan = stripe.Plan.retrieve(request.form['plan'])
         description='%s at a recurring cost of $%d / %s'%(plan.name, plan.amount/100, plan.interval)
       except:
-        return render_template('error.html', what='requested membership plan not found', watermark=watermark)
+        return render_template('error.html', what='requested membership plan not found')
 
     try:
       customer = stripe.Customer.create(
@@ -66,7 +69,7 @@ def charge():
       if not plan:
         description += ' reference customer# %s'%customer.id
     except:
-      return render_template('error.html', what='error adding new customer', watermark=watermark)
+      return render_template('error.html', what='error adding new customer')
 
 #    # Amount in cents
 #    amount = 500
@@ -79,7 +82,7 @@ def charge():
 
 
 
-    return render_template('signup_complete.html', description=description, watermark=watermark)
+    return render_template('signup_complete.html', description=description)
 
 if __name__ == '__main__':
     app.run(debug=True)

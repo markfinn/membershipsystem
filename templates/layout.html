@@ -11,18 +11,31 @@
     form .submit {
       margin: 15px 0;
     }
-.watermark {
-    position: absolute;
-        opacity: 0.25;
-            font-size: 3em;
-                width: 100%;
-                    text-align: center;
-                        z-index: -1000;
-                        }    
+.testMode {
+position: fixed;
+top: 14px;
+right: 14px;
+display: block;
+background: #f7e633;
+color: #363636;
+font-weight: bold;
+font-size: 11px;
+text-decoration: none;
+height: 26px;
+padding: 0 9px;
+text-align: center;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+-ms-border-radius: 5px;
+-o-border-radius: 5px;
+border-radius: 5px;
+line-height: 26px;
+opacity: 0.5;
+}
   </style>
 </head>
 <body>
-<div class="watermark">{{ watermark }}</div>
   {% block content %}{% endblock %}
+{% if IS_TEST_MODE %}<div class="testMode">TEST MODE</div>{% endif %}
 </body>
 </html>
