@@ -3,11 +3,12 @@ from flask import Flask, render_template, request, redirect, current_app, abort
 import ConfigParser
 import stripe
 from functools import wraps
+from urlparse import urlparse
 
-def ssl_required(fn):
+def secure_required_in_production(fn):
     @wraps(fn)
     def decorated_view(*args, **kwargs):
-        if request.is_secure:
+        if request.is_secure or urlparse(request.url).netloc.startswith('localhost:') and IS_TEST_MODE:
                 return fn(*args, **kwargs)
         else:
                 return redirect(request.url.replace("http://", "https://"))
@@ -15,6 +16,7 @@ def ssl_required(fn):
         abort(500)
             
     return decorated_view
+
 
 
 config = ConfigParser.SafeConfigParser()
@@ -27,20 +29,22 @@ stripe_pk = config.get('stripe_keys', 'publishable')
 assert stripe_sk[3:7] == stripe_pk[3:7]
 assert stripe_sk[3:7] == 'test' or  stripe_sk[3:7] == 'live'
 watermark=''
+IS_TEST_MODE = False
 if stripe_sk[3:7] == 'test':
   watermark='TEST'
+  IS_TEST_MODE = True
 
 stripe.api_key = stripe_sk
         
 app = Flask(__name__)
 
 @app.route('/signup')
-@ssl_required
+@secure_required_in_production
 def index():
     return render_template('signup.html', key=stripe_pk, watermark=watermark)
 
 @app.route('/signup_result', methods=['POST'])
-@ssl_required
+@secure_required_in_production
 def charge():
 
     if 'plan' not in request.form:
