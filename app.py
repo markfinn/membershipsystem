@@ -4,6 +4,7 @@ import ConfigParser
 import stripe
 from functools import wraps
 from urlparse import urlparse
+import json
 
 def secure_required_in_production(fn):
     @wraps(fn)
@@ -61,9 +62,11 @@ def charge():
         return render_template('error.html', what='requested membership plan not found')
 
     try:
+      stripeToken = json.loads(request.form['stripeToken'])
+
       customer = stripe.Customer.create(
-        email=request.form['stripeEmail'],
-        card=request.form['stripeToken'],
+        email=stripeToken['email'],
+        card=stripeToken['id'],
         plan=plan
         )
       if not plan:

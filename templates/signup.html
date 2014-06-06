@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
+<script src="https://checkout.stripe.com/checkout.js"></script>
+
+
     <article>
       <label>
         <span>Join Appleton Makerspace!</span>
@@ -7,61 +10,61 @@
       Choose a membership plan to authorize monthly payments:
     </article>
   <form action="{{ url_for('charge') }}" method="post">
-<input type="hidden" name="plan" value="membership_individual">
-    <script src="https://checkout.stripe.com/checkout.js"
-	class="stripe-button"
-            data-key="{{ key }}"
-            data-name="Appleton Makerspace"
-            data-description="Membership Signup"
-            data-panel-label="Join ($50/Mo)"
-            data-label="Individual Member"
-            data-billing-address="true"
-	data-allow-remember-me="false"
-            ></script>
+
+
+<input type="radio" name="rplan" value="membership_individual$50">Individual<br>
+<input type="radio" name="rplan" value="membership_family$75">Family<br>
+<input type="radio" name="rplan" value="membership_student$25">Student<br>
+<input type=hidden name=stripeToken>
+<input type="hidden" name="plan" id="hplan" value="">
+<button id="customButton">Join</button>
   </form>
 
-  <form action="{{ url_for('charge') }}" method="post">
-<input type="hidden" name="plan" value="membership_family">
-    <script src="https://checkout.stripe.com/checkout.js"
-	class="stripe-button"
-            data-key="{{ key }}"
-            data-name="Appleton Makerspace"
-            data-description="Membership Signup"
-            data-panel-label="Join ($75/Mo)"
-            data-label="Family Membership"
-            data-billing-address="true"
-	data-allow-remember-me="false"
-            ></script>
-  </form>
+<script>
+  var handler = StripeCheckout.configure({
+    key: '{{ key }}',
+    label: 'Join',
+    token: function(token, args) {
+	document.getElementsByName('stripeToken')[0].value=JSON.stringify(token);
+	document.getElementsByTagName('form')[0].submit();
+	
+    }
+  });
 
-  <form action="{{ url_for('charge') }}" method="post">
-<input type="hidden" name="plan" value="membership_student">
-    <script src="https://checkout.stripe.com/checkout.js"
-	class="stripe-button"
-            data-key="{{ key }}"
-            data-name="Appleton Makerspace"
-            data-description="Membership Signup"
-            data-panel-label="Join ($25/Mo)"
-            data-label="Student Member"
-            data-billing-address="true"
-	data-allow-remember-me="false"
-            ></script>
-  </form>
-<br>
-In weird cases, you can sign up a member account with out setting up a bill plan
-here:
-  <form action="{{ url_for('charge') }}" method="post">
-    <script src="https://checkout.stripe.com/checkout.js"
-	class="stripe-button"
-            data-key="{{ key }}"
-            data-name="Appleton Makerspace"
-            data-description="Membership Signup"
-            data-panel-label="Join special"
-            data-label="Other Membership"
-            data-billing-address="true"
-	data-allow-remember-me="false"
-            ></script>
-  </form>
+  document.getElementById('customButton').addEventListener('click', function(e) {
+
+var radios = document.getElementsByName('rplan');
+var value;
+var i;
+for (i = 0; i < radios.length; i++) {
+    if (radios[i].checked) {
+        value = radios[i].value.split('$');
+	break;
+    }}
+    e.preventDefault();
+if(i < radios.length)
+	{
+
+  document.getElementById('hplan').value=value[0];
+
+
+    handler.open({
+name:"Appleton Makerspace",
+description:"Membership Signup",
+amount: value[1]*100,
+panelLabel:"Join ($"+value[1]+"/Mo)",
+billingAddress:"true",
+allowRememberMe:"false"
+    });
+	}
+else
+document.getElementById('customButton').textContent='pick one';
+  });
+</script>
+
+
+
 <hr>
 To change or cancel membership, please Email <a href="mailto:memberships@dhmn.net">memberships@dhmn.net</a>
 {% endblock %}
+
