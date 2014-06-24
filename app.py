@@ -54,6 +54,21 @@ def charge():
     if 'plan' not in request.form:
       plan=None
       description='no plan, but a customer account has been created.  Email the treasurer to continue with whatever you are doing.'
+    elif request.form['plan'] == 'donation':
+      if 'amount' not in request.form:
+        return render_template('error.html', what='error parsing amount on back end')
+      try:
+        stripeToken = json.loads(request.form['stripeToken'])
+        a=int(float(request.form['amount'])*100);
+        stripe.Charge.create(
+          amount=a,
+          currency="usd",
+            card=stripeToken['id'],
+              description="donation"
+              )    
+        return render_template('signup_complete.html', description="donation of $%.2f sent"%(a/100))
+      except:
+        return render_template('error.html', what='error charging donation')
     else:
       try:
         plan = stripe.Plan.retrieve(request.form['plan'])

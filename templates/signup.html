@@ -15,9 +15,11 @@
 <input type="radio" name="rplan" value="membership_individual$50">Individual<br>
 <input type="radio" name="rplan" value="membership_family$75">Family<br>
 <input type="radio" name="rplan" value="membership_student$25">Student<br>
+<input type="radio" name="rplan" value="donation">Or just give a donation:<input type="text"
+name="amount" id="amount" value="30.00"><br>
 <input type=hidden name=stripeToken>
 <input type="hidden" name="plan" id="hplan" value="">
-<button id="customButton">Join</button>
+<button id="customButton">Join/Donate</button>
   </form>
 
 <script>
@@ -44,10 +46,31 @@ for (i = 0; i < radios.length; i++) {
     e.preventDefault();
 if(i < radios.length)
 	{
-
   document.getElementById('hplan').value=value[0];
 
-
+  if (value[0]==="donation")
+  {
+ 	a = document.getElementById('amount').value;
+ 	v = Math.floor(parseFloat(a*100));
+ 	if(isNaN(v) || v<=0)
+ 		alert("bad amount.  Enter a number like 30 of 30.00");
+ 	else if(v>100000)
+ 		alert("bad amount (maybe).  I'm ruling this out as a safety since I don't expect someone to donate that much without talking to us.  I you want to donate over $1000, please do, but maybe call us?");
+ 	else
+ 	{
+ 	
+    handler.open({
+name:"Appleton Makerspace",
+description:"Donation",
+amount: v,
+panelLabel:"Donate",
+billingAddress:"false",
+allowRememberMe:"true"
+    });
+}  
+  }
+  else
+  {
     handler.open({
 name:"Appleton Makerspace",
 description:"Membership Signup",
@@ -56,6 +79,8 @@ panelLabel:"Join ($"+value[1]+"/Mo)",
 billingAddress:"true",
 allowRememberMe:"false"
     });
+	}
+
 	}
 else
 document.getElementById('customButton').textContent='pick one';
