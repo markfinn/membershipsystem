@@ -41,8 +41,12 @@ app = Flask(__name__)
 def inject_user():
     return dict(IS_TEST_MODE=IS_TEST_MODE)
     
-
+#redirect for now since the flyer has the signup URL as our main URL 
 @app.route('/signup')
+def bounce():
+    return redirect('http://appletonmakerspace.org')
+
+@app.route('/signup2')
 @secure_required_in_production
 def index():
     return render_template('signup.html', key=stripe_pk)
