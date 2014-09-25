@@ -2,25 +2,52 @@
 {% block content %}
 <script src="https://checkout.stripe.com/checkout.js"></script>
 
-
     <article>
       <label>
         <span>Join Appleton Makerspace!</span>
       </label><br>
       Choose a membership plan to authorize monthly payments:
     </article>
+    <br>
   <form action="{{ url_for('charge') }}" method="post">
 
 
-<input type="radio" name="rplan" value="membership_individual$50">Individual<br>
-<input type="radio" name="rplan" value="membership_family$75">Family<br>
-<input type="radio" name="rplan" value="membership_student$25">Student<br>
-<input type="radio" name="rplan" value="donation">Or just give a donation:<input type="text"
-name="amount" id="amount" value="30.00"><br>
+<input type="radio" name="rplan" value="membership_individual$50" onclick="changebutton(this);">Individual<br>
+<input type="radio" name="rplan" value="membership_family$75" onclick="changebutton(this);">Family<br>
+<input type="radio" name="rplan" value="membership_student$25" onclick="changebutton(this);">Student<br>
+&emsp;-or-<br>
+<input type="radio" name="rplan" value="onetime" onclick="changebutton(this);">Send a one-tme payment or donation:<br>
+&emsp;Amount: <input type="text" name="amount" id="amount" value="30.00"><br>
+&emsp;Comment: <textarea name="comment" id="comment"></textarea><br>
+
 <input type=hidden name=stripeToken>
 <input type="hidden" name="plan" id="hplan" value="">
-<button id="customButton">Join/Donate</button>
+<br>
+<button id="customButton">Join/Donate/Pay</button>
   </form>
+
+
+<script>
+document.getElementById("comment").disabled = true;
+document.getElementById("amount").disabled = true;
+document.getElementById("customButton").innerHTML = 'pick a payment type';
+document.getElementById("customButton").disabled = true;
+function changebutton(whichRadio) {
+    if("onetime"==whichRadio.value)
+    	{
+		document.getElementById("comment").disabled = false;
+		document.getElementById("amount").disabled = false;
+		document.getElementById("customButton").innerHTML = 'Donate/Pay';
+	}
+	else
+    	{
+		document.getElementById("comment").disabled = true;
+		document.getElementById("amount").disabled = true;
+		document.getElementById("customButton").innerHTML = 'Sign Up';
+	}
+	document.getElementById("customButton").disabled = false;
+}
+</script>
 
 <script>
   var handler = StripeCheckout.configure({
@@ -48,7 +75,7 @@ if(i < radios.length)
 	{
   document.getElementById('hplan').value=value[0];
 
-  if (value[0]==="donation")
+  if (value[0]==="onetime")
   {
  	a = document.getElementById('amount').value;
  	v = Math.floor(parseFloat(a*100));
@@ -61,9 +88,9 @@ if(i < radios.length)
  	
     handler.open({
 name:"Appleton Makerspace",
-description:"Donation",
+description:"Donation/Payment",
 amount: v,
-panelLabel:"Donate",
+panelLabel:"Donate/Pay",
 billingAddress:"false",
 allowRememberMe:"true"
     });

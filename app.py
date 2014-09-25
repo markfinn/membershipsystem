@@ -58,9 +58,9 @@ def charge():
     if 'plan' not in request.form:
       plan=None
       description='no plan, but a customer account has been created.  Email the treasurer to continue with whatever you are doing.'
-    elif request.form['plan'] == 'donation':
+    elif request.form['plan'] == 'onetime':
       if 'amount' not in request.form:
-        return render_template('error.html', what='error parsing amount on back end')
+        return render_template('error.html', what='server side error parsing amount')
       try:
         stripeToken = json.loads(request.form['stripeToken'])
         a=int(float(request.form['amount'])*100);
@@ -68,17 +68,17 @@ def charge():
           amount=a,
           currency="usd",
             card=stripeToken['id'],
-              description="donation"
+              description="donation/payment: "+request.form['comment']
               )    
-        return render_template('signup_complete.html', description="donation of $%.2f sent"%(a/100))
+        return render_template('signup_complete.html', description="donation/payment of $%.2f sent"%(a/100))
       except:
-        return render_template('error.html', what='error charging donation')
+        return render_template('error.html', what='error charging donation/payment')
     else:
       try:
         plan = stripe.Plan.retrieve(request.form['plan'])
         description='%s at a recurring cost of $%d / %s'%(plan.name, plan.amount/100, plan.interval)
       except:
-        return render_template('error.html', what='requested membership plan not found')
+        return render_template('error.html', what='requested membership plan "%s" not found'%request.form['plan'])
 
     try:
       stripeToken = json.loads(request.form['stripeToken'])
@@ -104,7 +104,7 @@ def charge():
 
 
 
-    return render_template('signup_complete.html', description=description)
+    return render_template('signup_complete.html', description='are signed up for '+description)
 
 if __name__ == '__main__':
     app.run(debug=True)
