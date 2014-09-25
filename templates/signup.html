@@ -4,7 +4,7 @@
 
     <article>
       <label>
-        <span>Join Appleton Makerspace!</span>
+        <span>Join <a href="http://www.appletonmakerspace.org">Appleton Makerspace!</a></span>
       </label><br>
       Choose a membership plan to authorize monthly payments:
     </article>
@@ -24,8 +24,13 @@
 <input type="hidden" name="plan" id="hplan" value="">
 <br>
 <button id="customButton">Join/Donate/Pay</button>
-  </form>
-
+  </form><br>
+A note on security: Payments are handled by <a
+  href="https://stripe.com/">Stripe</a>, a certified PCI level 1 credit card
+  processor.  Your
+  credit card details never hit our server.
+<br>
+<br>
 
 <script>
 document.getElementById("comment").disabled = true;
