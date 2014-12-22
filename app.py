@@ -55,7 +55,7 @@ def index():
 @secure_required_in_production
 def charge():
 
-    if 'plan' not in request.form:
+    if 'plan' not in request.form or request.form['plan'] == '':
       plan=None
       description='no plan, but a customer account has been created.  Email the treasurer to continue with whatever you are doing.'
     elif request.form['plan'] == 'onetime':
