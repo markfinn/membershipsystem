@@ -61,6 +61,7 @@ function changebutton(whichRadio) {
   var handler = StripeCheckout.configure({
     key: '{{ key }}',
     label: 'Join',
+    bitcoin: "true",
     token: function(token, args) {
 	document.getElementsByName('stripeToken')[0].value=JSON.stringify(token);
 	document.getElementsByTagName('form')[0].submit();
